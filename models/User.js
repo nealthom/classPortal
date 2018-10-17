@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const validator = require('validator');
 
 //Create Schema
 const UserSchema = new Schema({
@@ -19,7 +18,19 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now()
-  }
+  },
+  assignments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'assignments'
+    }
+  ],
+  students: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'students'
+    }
+  ]
 });
 
 module.exports = mongoose.model('users', UserSchema);

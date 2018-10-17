@@ -15,6 +15,7 @@ const ProfileSchema = new Schema({
   company: {
     type: String
   },
+
   website: {
     type: String
   },
@@ -100,4 +101,4 @@ const ProfileSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('profile', profileSchema);
+module.exports = mongoose.model('profile', ProfileSchema);
