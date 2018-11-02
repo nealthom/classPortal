@@ -6,10 +6,11 @@ const passport = require('passport');
 // Load validation
 const validateProfileInput = require('../../validation/profile');
 const validateExperienceInput = require('../../validation/experience');
+const validateEducationInput = require('../../validation/education');
 
 // Load Profile Model
 const Profile = require('../../models/Profile');
-//Load User Profile
+//Load UserModel
 const User = require('../../models/User');
 
 // @route   Get api/profile/test
@@ -208,9 +209,9 @@ router.post(
     }
     const profile = await Profile.findOne({ user: req.user.id });
     const newEdu = {
-      title: req.body.title,
-      company: req.body.company,
-      location: req.body.location,
+      school: req.body.school,
+      degree: req.body.degree,
+      fieldofstudy: req.body.fieldofstudy,
       from: req.body.from,
       to: req.body.to,
       current: req.body.current,
@@ -218,9 +219,66 @@ router.post(
     };
 
     // Add to experience array
-    profile.experience.unshift(newExp);
+    profile.education.unshift(newEdu);
     const updatedProfile = await profile.save();
     res.json(updatedProfile);
+  }
+);
+
+// @route   DELETE api/profile/experience/:exp_id
+// @desc    Delete experience from profile
+// @access  Private
+router.delete(
+  '/experience/:exp_id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      profile.experience.remove({ _id: req.params.exp_id });
+
+      const updatedProfile = await profile.save();
+      res.json(updatedProfile);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  }
+);
+
+// @route   DELETE api/profile/education/:edu_id
+// @desc    Delete education from profile
+// @access  Private
+router.delete(
+  '/education/:edu_id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      profile.education.remove({ _id: req.params.edu_id });
+
+      const updatedProfile = await profile.save();
+      res.json(updatedProfile);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  }
+);
+
+// @route   DELETE api/profile/
+// @desc    Delete user and profile
+// @access  Private
+router.delete(
+  '/',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const profile = await Profile.findOneAndRemove({ user: req.user.id });
+      await User.findOneAndRemove({ _id: req.user.id });
+      res.json({ success: true });
+    } catch (err) {
+      res.status(404).json(err);
+    }
   }
 );
 
