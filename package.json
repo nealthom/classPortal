@@ -4,8 +4,11 @@
   "description": "Gradebook for teachers",
   "main": "server.js",
   "scripts": {
+    "client-install": "npm install --prefix client",
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"lsof -t -i tcp:5000 | xargs kill -9\" \"npm run server\" \"npm run client\""
   },
   "author": "Thomas Neal",
   "license": "ISC",
@@ -22,6 +25,7 @@
     "validator": "^10.8.0"
   },
   "devDependencies": {
+    "concurrently": "^4.0.1",
     "nodemon": "^1.18.4"
   }
 }
